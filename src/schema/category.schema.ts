@@ -12,9 +12,7 @@ const payload = {
 
 const updatePayload = {
   body: object({
-    title: string({
-      required_error: "Title is required",
-    }),
+    title: string().optional(),
     parent: string().optional(),
   }).strict(),
 };

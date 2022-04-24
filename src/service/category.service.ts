@@ -6,11 +6,15 @@ export const createCategory = async (input: DocumentDefinition<Omit<CategoryDocu
 };
 
 export const findCategory = async (query: FilterQuery<CategoryDocument>, options: QueryOptions = { lean: true }) => {
-  return CategoryModel.findOne(query, {}, options).populate("parent").lean();
+  return CategoryModel.findOne(query, {}, options)
+    .populate({ path: "parent", populate: { path: "parent", model: "Category" } })
+    .lean().exec();
 };
 
 export const findCategories = async (query: FilterQuery<CategoryDocument>) => {
-  return CategoryModel.find(query).populate("parent").lean();
+  return CategoryModel.find(query)
+    .populate({ path: "parent", populate: { path: "parent", model: "Category" } })
+    .lean().exec();
 };
 
 export const findAndUpdateCategory = async (

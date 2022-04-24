@@ -3,6 +3,7 @@ import config from "config";
 import cors from "cors";
 import logger from "./utils/logger";
 import connect from "./utils/connect";
+import routes from "./routes";
 
 const port = config.get<number>("port");
 
@@ -15,4 +16,5 @@ app.use(express.json());
 app.listen(port, async () => {
   logger.info(`App is running at http://localhost:${port}`);
   await connect();
+  routes(app);
 });

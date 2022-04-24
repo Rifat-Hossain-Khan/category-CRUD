@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 export interface CategoryDocument extends mongoose.Document {
   title: string;
   active: boolean;
-  parentId: CategoryDocument["_id"];
+  parent: CategoryDocument["_id"];
   createdAt: Date;
   updatedAt: Date;
 }
@@ -22,6 +22,7 @@ const categorySchema = new mongoose.Schema(
     parent: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Category",
+      default: null,
     },
   },
   {
@@ -30,19 +31,18 @@ const categorySchema = new mongoose.Schema(
 );
 
 categorySchema.pre("deleteOne", async function (next) {
-  let category = this as CategoryDocument;
-  const categories = await this.model.find({ _id: category._id }).distinct("_id");
+  const categories = await this.model.find({ parent: this._conditions._id }).distinct("_id");
   categories.forEach(async (id: CategoryDocument["_id"]) => {
-    await this.model.deleteOne({ parentId: id });
+    await this.model.deleteOne({ _id: id });
   });
   next();
 });
 
 categorySchema.pre("updateOne", async function (next) {
-  let category = this as CategoryDocument;
-  const categories = await this.model.find({ _id: category._id }).distinct("_id");
+  const categories = await this.model.find({ parent: this._conditions._id }).distinct("_id");
+
   categories.forEach(async (id: CategoryDocument["_id"]) => {
-    if (category.active) await this.model.updateOne({ parentId: id }, { active: !category.active });
+    if (!this._update.active) await this.model.updateOne({ _id: id }, { active: false });
   });
   next();
 });

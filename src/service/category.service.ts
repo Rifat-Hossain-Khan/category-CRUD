@@ -13,7 +13,11 @@ export const findCategories = async (query: FilterQuery<CategoryDocument>) => {
   return CategoryModel.find(query).populate("parent").lean();
 };
 
-export const findAndUpdateCategory = async (query: FilterQuery<CategoryDocument>, update: UpdateQuery<CategoryDocument>, options: QueryOptions) => {
+export const findAndUpdateCategory = async (
+  query: FilterQuery<CategoryDocument>,
+  update: UpdateQuery<Omit<CategoryDocument, "active">>,
+  options: QueryOptions
+) => {
   return CategoryModel.findOneAndUpdate(query, update, options);
 };
 

@@ -17,3 +17,10 @@ npm install typescript
 ```
 
 -   ### Configure [config/default](config) file to set up local env and MongoDB database
+
+-   ### To start te porejct run:
+
+```
+npm start
+
+```
